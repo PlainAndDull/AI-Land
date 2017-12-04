@@ -11,6 +11,5 @@ class Clock:
     def tick(self: 'Clock', framerate: 'int') -> 'None':
         
         self.clock.tick(framerate)
-        print(self.clock.get_fps())
         
         return None

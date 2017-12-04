@@ -11,3 +11,15 @@ class Image:
         self.image.set_colorkey(pygame.Color(transparent))
         
         return None
+    
+    def get_image(self: 'Image') -> 'Surface':
+        
+        return self.image
+    
+    def get_area(self: 'Image', area: 'str') -> 'Rect':
+        
+        return self.areas[area]
+    
+    def add_area(self: 'Image', area: 'str', x: 'int', y: 'int', w: 'int', h: 'int') -> 'None':
+        
+        self.areas[area] = pygame.Rect(x, y, w, h)
