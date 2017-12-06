@@ -48,6 +48,8 @@ class Game:
             x += dx
             y += dy
             self.graphics.draw(3, "player", "up", x, y)
+            self.graphics.draw(0, "player", "down", 64, 64)
+            self.graphics.draw(0, "player", "down", 96, 64)
             self.graphics.update()
             
         return None
@@ -59,7 +61,6 @@ class Game:
         return None
     
 if __name__ == "__main__":
-        
     game = Game()
     game.execute()
     game.terminate()

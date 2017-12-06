@@ -12,7 +12,7 @@ class Window:
     
     def __init__(self: 'Window', scale: 'int', transparent: 'str') -> 'None':
         
-        self.display = pygame.Surface((0, 0))
+        self.display = None
         self.layers = []
         self.updates = []
         
@@ -20,8 +20,6 @@ class Window:
             os.environ["SDL_VIDEODRIVER"] = "directx"
         elif sys.platform == "darwin":
             os.environ["SDL_VIDEODRIVER"] = "Quartz"
-        else:
-            pass
         pygame.display.init()
         pygame.display.set_caption(TITLE)
         pygame.display.set_icon(pygame.image.load(ICON))
@@ -37,7 +35,7 @@ class Window:
     def draw(self: 'Window', layer: 'int', image: 'Surface', x: 'int', y: 'int', area: 'Rect') -> 'None':
         
         self.layers[layer].blit(image, (x, y), area)
-        self.updates.append(pygame.Rect(x, y, area.w, area.h))
+        self._add_update(pygame.Rect(x, y, area.w, area.h))
         
         return None
     
@@ -45,7 +43,7 @@ class Window:
         
         update = pygame.Rect(x, y, w, h)
         self.layers[layer].fill(self.layers[layer].get_colorkey(), update)
-        self.updates.append(update)
+        self._add_update(update)
         
         return None
     
@@ -62,5 +60,32 @@ class Window:
     def close(self: 'Window') -> 'None':
         
         pygame.display.quit()
+        
+        return None
+    
+    def _add_update(self: 'Window', update: 'Rect') -> 'None':
+        
+        rectangles = []
+        indices = update.collidelistall(self.updates)
+        for index in indices:
+            rectangles.append(self.updates.pop(index))
+        update.unionall_ip(rectangles)
+        union = True
+        while union:
+            union = False
+            for index in range(len(self.updates)):
+                if update.centerx == self.updates[index].centerx:
+                    if update.width == self.updates[index].width:
+                        if update.top == self.updates[index].bottom or update.bottom == self.updates[index].top:
+                            update.union_ip(self.updates.pop(index))
+                            union = True
+                            break
+                elif update.centery == self.updates[index].centery:
+                    if update.height == self.updates[index].height:
+                        if update.right == self.updates[index].left or update.left == self.updates[index].right:
+                            update.union_ip(self.updates.pop(index))
+                            union = True
+                            break
+        self.updates.append(update)
         
         return None

@@ -18,12 +18,9 @@ class Controller:
     def update(self: 'Controller') -> 'None':
         
         event = pygame.event.poll()
-        pressed = pygame.key.get_pressed()
-        
         if event.type == pygame.QUIT:
-            
             self.quit = True
-            
+        pressed = pygame.key.get_pressed()
         self.up = pressed[pygame.K_UP]
         self.down = pressed[pygame.K_DOWN]
         self.left = pressed[pygame.K_LEFT]
